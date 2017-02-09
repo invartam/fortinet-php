@@ -14,7 +14,7 @@
         "Tests\\": "tests/"
       },
       "psr-4": {
-        "MAL\\": "src/Fortinet/Fortigate"
+        "Fortigate\\": "src/Fortinet/Fortigate"
       }
     },
     "require-dev": {

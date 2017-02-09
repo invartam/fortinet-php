@@ -1,0 +1,12 @@
+<?php
+
+namespace Fortinet\Fortigate\Policy;
+
+class PolicyObject {
+
+  protected $name = "";
+
+  public function setName($name) {
+    $this->name = $name;
+  }
+}

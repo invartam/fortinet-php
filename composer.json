@@ -1,0 +1,23 @@
+{
+    "name": "OCD/fortinet-php",
+    "description": "Fortinet PHP library",
+    "type": "library",
+    "license": "GNU 3",
+    "authors": [
+        {
+            "name": "Benjamin Perdrijau OBS/OCD",
+            "email": "benjamin.perdrijau@orange.com"
+        }
+    ],
+    "autoload": {
+      "psr-0": {
+        "Tests\\": "tests/"
+      },
+      "psr-4": {
+        "MAL\\": "src/Fortinet/Fortigate"
+      }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.7.*"
+    }
+}

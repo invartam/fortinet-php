@@ -10,7 +10,7 @@ class PolicyObject {
     $this->name = $name;
   }
 
-  public function getName($name) {
+  public function getName() {
     return $this->name;
   }
 }

@@ -2,7 +2,7 @@
 
 namespace Fortinet\Fortigate\Policy;
 
-use PolicyObject;
+use Fortinet\Fortigate\Policy\PolicyObject;
 
 class PolicyInterface extends PolicyObject {
 

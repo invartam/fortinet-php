@@ -2,7 +2,7 @@
 
 namespace Fortinet\Fortigate;
 
-class Interface {
+class NetDevice extends PolicyInterface {
 
   private static $ANY = NULL;
 
@@ -43,7 +43,7 @@ class Interface {
     }
   }
 
-  public function addLaggInterface(Interface $if)
+  public function addLaggNetDevice(NetDevice $if)
   {
     $this->laggGroup[] = $if;
   }

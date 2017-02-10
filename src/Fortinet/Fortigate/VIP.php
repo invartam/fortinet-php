@@ -2,8 +2,8 @@
 
 namespace Fortinet\Fortigate;
 
-use Policy\PolicyAddress as PolicyAddress;
-use Policy\PolicyInterface as PolicyInterface;
+use Fortinet\Fortigate\Policy\PolicyAddress;
+use Fortinet\Fortigate\Policy\PolicyInterface;
 
 class VIP extends PolicyAddress {
 

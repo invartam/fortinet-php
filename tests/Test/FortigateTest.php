@@ -9,7 +9,7 @@ use Fortinet\Fortigate\Fortigate;
 use Fortinet\Fortigate\Fortigate\Policy\Policy;
 use Fortinet\Fortigate\Address;
 use Fortinet\Fortigate\AddressGroup;
-use Fortinet\Fortigate\Interface;
+use Fortinet\Fortigate\NetDevice;
 use Fortinet\Fortigate\Service;
 use Fortinet\Fortigate\VIP;
 use Fortinet\Fortigate\Zone;
@@ -21,8 +21,8 @@ class FortigateTest extends TestCase {
   {
     $fgt = new Fortigate();
     $addr = new Address("test", "192.168.1.254", 24);
-    $this->assertEqual($addr->getName(), "test");
-    $this->assertEqual($addr->ip, "192.168.1.254");
+    $this->assertEquals($addr->getName(), "test");
+    $this->assertEquals($addr->ip, "192.168.1.254");
     $this->assertTrue($fgt->addAddress($addr));
   }
 
@@ -31,7 +31,7 @@ class FortigateTest extends TestCase {
     $fgt = new Fortigate();
     $grp = new AddressGroup("GN-TEST");
     $grp->addAddress(new Address("test", "192.168.1.254", 24));
-    $this->assertEqual($grp->getName(), "GN-TEST");
+    $this->assertEquals($grp->getName(), "GN-TEST");
     $this->assertTrue($fgt->addAddressGroup($grp));
   }
 }

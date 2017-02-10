@@ -2,7 +2,7 @@
 
 namespace Fortinet\Fortigate;
 
-use Service;
+use Fortinet\Fortigate\Service;
 
 class ServiceGroup {
 

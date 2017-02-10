@@ -2,9 +2,9 @@
 
 namespace Fortinet\Fortigate\Policy;
 
-use PolicyAddress;
-use PolicyService;
-use PolicyInterface;
+use Fortinet\Fortigate\Policy\PolicyAddress;
+use Fortinet\Fortigate\Policy\PolicyService;
+use Fortinet\Fortigate\Policy\PolicyInterface;
 
 class Policy {
 

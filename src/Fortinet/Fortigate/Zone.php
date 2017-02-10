@@ -2,8 +2,8 @@
 
 namespace Fortinet\Fortigate;
 
-use Policy\PolicyInterface as PolicyInterface;
-use Interface;
+use Fortinet\Fortigate\Policy\PolicyInterface;
+use Fortinet\Fortigate\Interface;
 
 class Zone extends PolicyInterface {
 

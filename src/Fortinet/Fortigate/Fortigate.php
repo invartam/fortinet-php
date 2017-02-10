@@ -2,22 +2,22 @@
 
 namespace Fortinet\Fortigate;
 
-use FortiGlobal;
-use HA;
-use Interface;
-use Zone;
-use Address;
-use AddressGroup;
-use Service;
-use ServiceGroup;
-use Policy\Policy as Policy;
+use Fortinet\Fortigate\FortiGlobal;
+use Fortinet\Fortigate\HA;
+use Fortinet\Fortigate\NetDevice;
+use Fortinet\Fortigate\Zone;
+use Fortinet\Fortigate\Address;
+use Fortinet\Fortigate\AddressGroup;
+use Fortinet\Fortigate\Service;
+use Fortinet\Fortigate\ServiceGroup;
+use Fortinet\Fortigate\Policy\Policy;
 
 class Fortigate {
 
-  private FortiGlobal $global;
-  private HA $ha;
-  private $interfaces = [];
-  private $zones[];
+  private $global;
+  private $ha;
+  private $NetDevices = [];
+  private $zones = [];
   private $addresses = [];
   private $addressGroups = [];
   private $services = [];
@@ -25,10 +25,10 @@ class Fortigate {
   private $policies = [];
   private $VIPs = [];
 
-  public function addInterface(Interface $if)
+  public function addNetDevice(NetDevice $if)
   {
-    if (!array_key_exists($if->name, $this->interfaces)) {
-      $this->interfaces[$if->name] = $if;
+    if (!array_key_exists($if->getName(), $this->NetDevices)) {
+      $this->NetDevices[$if->getName()] = $if;
       return true;
     }
     return false;
@@ -36,8 +36,8 @@ class Fortigate {
 
   public function addZone(Zone $zone)
   {
-    if (!array_key_exists($zone->name, $this->zones)) {
-      $this->zones[$zone->name] = $zone;
+    if (!array_key_exists($zone->getName(), $this->zones)) {
+      $this->zones[$zone->getName()] = $zone;
       return true;
     }
     return false;
@@ -45,8 +45,8 @@ class Fortigate {
 
   public function addAddress(Address $addr)
   {
-    if (!array_key_exists($addr->name, $this->addresses)) {
-      $this->addresses[$addr->name] = $addr;
+    if (!array_key_exists($addr->getName(), $this->addresses)) {
+      $this->addresses[$addr->getName()] = $addr;
       return true;
     }
     return false;
@@ -54,8 +54,8 @@ class Fortigate {
 
   public function addAddressGroup(AddressGroup $addrgrp)
   {
-    if (!array_key_exists($addrgrp->name ,$this->addressGroups)) {
-      $this->addressGroups[$addrgrp->name] = $addrgrp;
+    if (!array_key_exists($addrgrp->getName() ,$this->addressGroups)) {
+      $this->addressGroups[$addrgrp->getName()] = $addrgrp;
       return true;
     }
     return false;
@@ -63,8 +63,8 @@ class Fortigate {
 
   public function addService(Service $svc)
   {
-    if (!array_key_exists($svc->name, $this->services)) {
-      $this->services[$svc->name] = $svc;
+    if (!array_key_exists($svc->getName(), $this->services)) {
+      $this->services[$svc->getName()] = $svc;
       return true;
     }
     return false;
@@ -73,28 +73,28 @@ class Fortigate {
   public function addPolicy(Policy $policy)
   {
     foreach ($policy->srcintfs as $if) {
-      if (!array_key_exists($if->name, $this->interfaces)
-          && !array_key_exists($if->name, $this->zones)
+      if (!array_key_exists($if->getName(), $this->NetDevices)
+          && !array_key_exists($if->getName(), $this->zones)
           && $if->name != "all")
       {
-        print "[ERROR] Fortigate::addPolicy(): Source interface $if->name does not exist\n";
+        print "[ERROR] Fortigate::addPolicy(): Source NetDevice $if->name does not exist\n";
         return false;
       }
     }
 
     foreach ($policy->dstintfs as $if) {
-      if (!array_key_exists($if->name, $this->interfaces)
-          && !array_key_exists($if->name, $this->zones)
+      if (!array_key_exists($if->getName(), $this->NetDevices)
+          && !array_key_exists($if->getName(), $this->zones)
           && $if->name != "all")
       {
-        print "[ERROR] Fortigate::addPolicy(): Destination interface $if->name does not exist\n";
+        print "[ERROR] Fortigate::addPolicy(): Destination NetDevice $if->name does not exist\n";
         return false;
       }
     }
 
     foreach ($policy->srcaddrs as $addr) {
-      if (!array_key_exists($addr->name, $this->addresses)
-          && !array_key_exists($addr->name, $this->addressGroups)
+      if (!array_key_exists($addr->getName(), $this->addresses)
+          && !array_key_exists($addr->getName(), $this->addressGroups)
           && $addr->name != "any")
       {
         print "[ERROR] Fortigate::addPolicy(): Source address $addr->name does not exist\n";
@@ -103,9 +103,9 @@ class Fortigate {
     }
 
     foreach ($policy->dstaddrs as $addr) {
-      if (!array_key_exists($addr->name, $this->addresses)
-          && !array_key_exists($addr->name, $this->addressGroups)
-          && !array_key_exists($addr->name, $this->VIPs)
+      if (!array_key_exists($addr->getName(), $this->addresses)
+          && !array_key_exists($addr->getName(), $this->addressGroups)
+          && !array_key_exists($addr->getName(), $this->VIPs)
           && $addr->name != "any")
       {
         print "[ERROR] Fortigate::addPolicy(): Destination address $addr->name does not exist\n";
@@ -114,11 +114,11 @@ class Fortigate {
     }
 
     foreach ($policy->services as $service) {
-      if (!array_key_exists($service->name, $this->services)
-          && !array_key_exists($service->name, $this->serviceGroups)
+      if (!array_key_exists($service->getName(), $this->services)
+          && !array_key_exists($service->getName(), $this->serviceGroups)
           && $service->name != "ALL")
       {
-        print "[ERROR] Fortigate::addPolicy(): Service $service->name does not exist\n";
+        print "[ERROR] Fortigate::addPolicy(): Service $service->getName() does not exist\n";
         return false;
       }
     }
@@ -129,8 +129,8 @@ class Fortigate {
 
   public function addVIP(VIP $vip)
   {
-    if (!array_key_exists($vip->name, $this->VIPs)) {
-      $this->VIPs[$vip->name] = $vip;
+    if (!array_key_exists($vip->getName(), $this->VIPs)) {
+      $this->VIPs[$vip->getName()] = $vip;
       return true;
     }
     return false;

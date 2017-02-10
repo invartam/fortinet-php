@@ -74,7 +74,8 @@ class Fortigate {
   {
     foreach ($policy->srcintfs as $if) {
       if (!array_key_exists($if->name, $this->interfaces)
-          && !array_key_exists($if->name, $this->zones))
+          && !array_key_exists($if->name, $this->zones)
+          && $if->name != "all")
       {
         print "[ERROR] Fortigate::addPolicy(): Source interface $if->name does not exist\n";
         return false;
@@ -83,7 +84,8 @@ class Fortigate {
 
     foreach ($policy->dstintfs as $if) {
       if (!array_key_exists($if->name, $this->interfaces)
-          && !array_key_exists($if->name, $this->zones))
+          && !array_key_exists($if->name, $this->zones)
+          && $if->name != "all")
       {
         print "[ERROR] Fortigate::addPolicy(): Destination interface $if->name does not exist\n";
         return false;
@@ -92,7 +94,8 @@ class Fortigate {
 
     foreach ($policy->srcaddrs as $addr) {
       if (!array_key_exists($addr->name, $this->addresses)
-          && !array_key_exists($addr->name, $this->addressGroups))
+          && !array_key_exists($addr->name, $this->addressGroups)
+          && $addr->name != "any")
       {
         print "[ERROR] Fortigate::addPolicy(): Source address $addr->name does not exist\n";
         return false;
@@ -102,7 +105,8 @@ class Fortigate {
     foreach ($policy->dstaddrs as $addr) {
       if (!array_key_exists($addr->name, $this->addresses)
           && !array_key_exists($addr->name, $this->addressGroups)
-          && !array_key_exists($addr->name, $this->VIPs))
+          && !array_key_exists($addr->name, $this->VIPs)
+          && $addr->name != "any")
       {
         print "[ERROR] Fortigate::addPolicy(): Destination address $addr->name does not exist\n";
         return false;
@@ -111,7 +115,8 @@ class Fortigate {
 
     foreach ($policy->services as $service) {
       if (!array_key_exists($service->name, $this->services)
-          && !array_key_exists($service->name, $this->serviceGroups))
+          && !array_key_exists($service->name, $this->serviceGroups)
+          && $service->name != "ALL")
       {
         print "[ERROR] Fortigate::addPolicy(): Service $service->name does not exist\n";
         return false;
@@ -131,7 +136,7 @@ class Fortigate {
     return false;
   }
 
-  public function __get($property, $value)
+  public function __get($property)
   {
     if (property_exists($this, $property)) {
       return $this->$property;

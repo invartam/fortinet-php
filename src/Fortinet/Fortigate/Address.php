@@ -6,10 +6,20 @@ use Policy\PolicyAddress as PolicyAddress;
 
 class Address extends PolicyAddress {
 
+  private static $ALL = null;
+
   private $ip = "";
   private $mask = 32;
 
-  public function __construct($name, $ip, $mask = 32)
+  public static function ALL()
+  {
+    if (!Self::$ALL) {
+      Self::$ALL = new Self("all");
+    }
+    return Self::$ALL;
+  }
+
+  public function __construct($name, $ip="0.0.0.0", $mask = 32)
   {
     $this->name = $name;
     $this->ip = $ip;
@@ -23,7 +33,7 @@ class Address extends PolicyAddress {
     }
   }
 
-  public function __get($property, $value)
+  public function __get($property)
   {
     if (property_exists($this, $property)) {
       return $this->$property;

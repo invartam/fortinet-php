@@ -4,10 +4,20 @@ namespace Fortinet\Fortigate;
 
 class Service {
 
+  private static $ALL = null;
+
   private $name = "";
   private $sport = 0;
   private $dport = 0;
   private $proto = "tcp";
+
+  public static function ALL()
+  {
+    if (!Self::$ALL) {
+      Self::$ALL = new Self("ALL");
+    }
+    return Self::$ALL;
+  }
 
   public function __construct($name, $proto = "icmp", $dport = 0, $sport = 0)
   {
@@ -24,7 +34,7 @@ class Service {
     }
   }
 
-  public function __get($property, $value)
+  public function __get($property)
   {
     if (property_exists($this, $property)) {
       return $this->$property;

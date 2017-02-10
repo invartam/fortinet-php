@@ -2,16 +2,22 @@
 
 namespace Fortinet\Fortigate;
 
+use Fortinet\Fortigate\Policy\PolicyInterface;
+
 class NetDevice extends PolicyInterface {
+
+  const PHY = 0;
+  const VLAN = 1;
+  const LAGG = 2;
 
   private static $ANY = NULL;
 
-  private $name = "";
   private $ip = "0.0.0.0";
   private $masklength = 0;
-  private $type = "physical";
+  private $type = self::PHY;
   private $laggGroup = [];
   private $vlanID = 0;
+  private $vlanDevice;
 
   public static function ANY()
   {
@@ -21,7 +27,7 @@ class NetDevice extends PolicyInterface {
     return self::$ANY;
   }
 
-  public function __construct($name, $type = "physical", $ip = "0.0.0.0", $masklength = 0)
+  public function __construct($name, $type = self::PHY, $ip = "0.0.0.0", $masklength = 0)
   {
     $this->name = $name;
     $this->type = $type;
@@ -46,5 +52,15 @@ class NetDevice extends PolicyInterface {
   public function addLaggNetDevice(NetDevice $if)
   {
     $this->laggGroup[] = $if;
+  }
+
+  public function setVlanDevice(NetDevice $if)
+  {
+    $this->vlanDevice = $if;
+  }
+
+  public function getVlanDevice(NetDevice $if)
+  {
+    return $this->vlanDevice;
   }
 }

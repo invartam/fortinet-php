@@ -16,7 +16,7 @@ class Fortigate {
 
   private $global;
   private $ha;
-  private $NetDevices = [];
+  private $interfaces = [];
   private $zones = [];
   private $addresses = [];
   private $addressGroups = [];
@@ -27,8 +27,8 @@ class Fortigate {
 
   public function addNetDevice(NetDevice $if)
   {
-    if (!array_key_exists($if->getName(), $this->NetDevices)) {
-      $this->NetDevices[$if->getName()] = $if;
+    if (!array_key_exists($if->getName(), $this->interfaces)) {
+      $this->interfaces[$if->getName()] = $if;
       return true;
     }
     return false;

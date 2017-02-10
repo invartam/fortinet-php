@@ -34,4 +34,41 @@ class FortigateTest extends TestCase {
     $this->assertEquals($grp->getName(), "GN-TEST");
     $this->assertTrue($fgt->addAddressGroup($grp));
   }
+
+  public function testAddSimpleNetDevice()
+  {
+    $fgt = new Fortigate();
+    $port1 = new NetDevice("port1", NetDevice::PHY);
+    $fgt->addNetDevice($port1);
+
+    $this->assertEquals($fgt->interfaces["port1"]->getName(), "port1");
+    $this->assertEquals($fgt->interfaces["port1"]->type, NetDevice::PHY);
+  }
+
+  public function testVlanLaggInterface()
+  {
+    $fgt = new Fortigate();
+    $port1 = new NetDevice("port1", NetDevice::PHY);
+    $port2 = new NetDevice("port2", NetDevice::PHY);
+    $lagg1 = new NetDevice("lagg1", NetDevice::LAGG);
+    $lagg1->addLaggNetDevice($port1);
+    $lagg1->addLaggNetDevice($port2);
+    $vlan42 = new NetDevice("vlan42", NetDevice::VLAN, "192.168.42.254", 24);
+    $vlan42->setVlanDevice($lagg1);
+    $vlan42->vlanID = 42;
+    $fgt->addNetDevice($port1);
+    $fgt->addNetDevice($port2);
+    $fgt->addNetDevice($lagg1);
+    $fgt->addNetDevice($vlan42);
+
+    $this->assertEquals($fgt->interfaces["vlan42"]->getName(), "vlan42");
+    $this->assertEquals($fgt->interfaces["vlan42"]->type, NetDevice::VLAN);
+    $this->assertEquals($fgt->interfaces["vlan42"]->vlanID, 42);
+    $this->assertEquals($fgt->interfaces["vlan42"]->vlanDevice->type, NetDevice::LAGG);
+    $this->assertEquals($fgt->interfaces["vlan42"]->vlanDevice->laggGroup[0]->type, NetDevice::PHY);
+    $this->assertEquals($fgt->interfaces["vlan42"]->vlanDevice->laggGroup[1]->type, NetDevice::PHY);
+    $this->assertEquals($fgt->interfaces["lagg1"], $lagg1);
+    $this->assertEquals($fgt->interfaces["port1"], $port1);
+    $this->assertEquals($fgt->interfaces["port2"], $port2);
+  }
 }

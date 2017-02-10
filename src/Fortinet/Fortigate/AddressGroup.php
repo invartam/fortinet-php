@@ -2,7 +2,7 @@
 
 namespace Fortinet\Fortigate;
 
-use Policy\PolicyAddress as PolicyAddress;
+use Policy\PolicyAddress;
 use Address;
 
 class AddressGroup extends PolicyAddress {

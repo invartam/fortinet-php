@@ -1,10 +1,10 @@
 <?php
 
-namespace Fortigate\Fortinet;
+namespace Fortinet\Fortigate;
 
 class Interface {
 
-  private static $ANY = null;
+  private static $ANY = NULL;
 
   private $name = "";
   private $ip = "0.0.0.0";

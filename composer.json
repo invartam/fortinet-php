@@ -14,10 +14,14 @@
         "Tests\\": "tests/"
       },
       "psr-4": {
-        "Fortigate\\": "src/Fortinet/Fortigate"
+        "Fortinet\\": "src/Fortinet"
       }
     },
     "require-dev": {
         "phpunit/phpunit": "5.7.*"
+    },
+    "config": {
+        "preferred-install": "dist",
+        "secure-http": false
     }
 }

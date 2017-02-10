@@ -16,30 +16,30 @@ class Policy {
 
   public function addSrcInterface(PolicyInterface $if)
   {
-    $this->srcintfs[] = $if;
+    $this->srcintfs[] = $if->getName();
   }
 
   public function addDstInterface(PolicyInterface $if)
   {
-    $this->dstintfs[] = $if;
+    $this->dstintfs[] = $if->getName();
   }
 
   public function addSrcAddress(PolicyAddress $addr)
   {
-    $this->srcaddrs[] = $addr;
+    $this->srcaddrs[] = $addr->getName();
   }
 
   public function addDstAddress(PolicyAddress $addr)
   {
-    $this->dstaddrs[] = $addr;
+    $this->dstaddrs[] = $addr->getName();
   }
 
   public function addService(PolicyService $svc)
   {
-    $this->services[] = $svc;
+    $this->services[] = $svc->getName();
   }
 
-  public function __get($property, $value)
+  public function __get($property)
   {
     if (property_exists($this, $property)) {
       return $this->$property;

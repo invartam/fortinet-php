@@ -15,10 +15,10 @@ class Interface {
 
   public static function ANY()
   {
-    if (!Self::$ANY) {
-      Self::$ALL = new Self("any");
+    if (!self::$ANY) {
+      self::$ALL = new self("any");
     }
-    return Self::$ANY;
+    return self::$ANY;
   }
 
   public function __construct($name, $type = "physical", $ip = "0.0.0.0", $masklength = 0)

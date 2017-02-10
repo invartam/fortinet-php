@@ -13,10 +13,10 @@ class Service {
 
   public static function ALL()
   {
-    if (!Self::$ALL) {
-      Self::$ALL = new Self("ALL");
+    if (!self::$ALL) {
+      self::$ALL = new self("ALL");
     }
-    return Self::$ALL;
+    return self::$ALL;
   }
 
   public function __construct($name, $proto = "icmp", $dport = 0, $sport = 0)

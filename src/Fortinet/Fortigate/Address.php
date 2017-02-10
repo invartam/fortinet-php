@@ -13,10 +13,10 @@ class Address extends PolicyAddress {
 
   public static function ALL()
   {
-    if (!Self::$ALL) {
-      Self::$ALL = new Self("all");
+    if (!self::$ALL) {
+      self::$ALL = new self("all");
     }
-    return Self::$ALL;
+    return self::$ALL;
   }
 
   public function __construct($name, $ip="0.0.0.0", $mask = 32)

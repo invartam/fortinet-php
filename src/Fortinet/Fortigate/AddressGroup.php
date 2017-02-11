@@ -14,8 +14,15 @@ class AddressGroup extends PolicyAddress {
     $this->name = $name;
   }
 
-  public function addAddress(Address $address)
+  public function addAddress(PolicyAddress $address)
   {
-    $this->addresses[] = $address;
+    $this->addresses[] = $address->getName();
+  }
+
+  public function __get($property)
+  {
+    if (property_exists($this, $property)) {
+      return $this->$property;
+    }
   }
 }

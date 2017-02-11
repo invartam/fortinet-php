@@ -31,8 +31,14 @@ class FortigateTest extends TestCase {
     $fgt = new Fortigate();
     $grp = new AddressGroup("GN-TEST");
     $grp->addAddress(new Address("test", "192.168.1.254", 24));
+    $grp2 = new AddressGroup("GN-TEST2");
+    $grp2->addAddress($grp);
     $this->assertEquals($grp->getName(), "GN-TEST");
+    $this->assertEquals($grp->addresses[0], "test");
+    $this->assertEquals($grp2->addresses[0], "GN-TEST");
     $this->assertTrue($fgt->addAddressGroup($grp));
+    $this->assertTrue($fgt->addAddressGroup($grp2));
+    var_dump($fgt);
   }
 
   public function testAddSimpleNetDevice()

@@ -3,8 +3,9 @@
 namespace Fortinet\Fortigate;
 
 use Fortinet\Fortigate\Service;
+use Fortinet\Fortigate\Policy\PolicyService;
 
-class ServiceGroup {
+class ServiceGroup extends PolicyService {
 
   $name = "";
   $services = [];

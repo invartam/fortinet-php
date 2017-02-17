@@ -2,13 +2,14 @@
 
 namespace Fortinet\Fortigate;
 
+use Exception;
 use Fortinet\Fortigate\Service;
 use Fortinet\Fortigate\Policy\PolicyService;
 
 class ServiceGroup extends PolicyService {
 
-  $name = "";
-  $services = [];
+  private $name = "";
+  private $services = [];
 
   public function __construct($name)
   {
@@ -25,5 +26,18 @@ class ServiceGroup extends PolicyService {
     if (property_exists($this, $property)) {
       return $this->$property;
     }
+  }
+
+  public function getConf()
+  {
+    if (empty($this->services)){
+      throw new Exception("There is no services in service group $this->name", 1);
+
+    }
+    $conf = "edit \"$this->name\"\n";
+    $conf .= "set member " . implode($this->services) . "\n";
+    $conf .= "next\n";
+
+    return $conf;
   }
 }

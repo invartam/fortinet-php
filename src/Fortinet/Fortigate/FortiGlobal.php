@@ -19,4 +19,11 @@ class FortiGlobal {
       return $this->$property;
     }
   }
+
+  public function getConf()
+  {
+    print "set hostname $this->hostname\n";
+
+    return $conf;
+  }
 }

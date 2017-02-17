@@ -6,7 +6,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
 use Fortinet\Fortigate\Fortigate;
-use Fortinet\Fortigate\Fortigate\Policy\Policy;
+use Fortinet\Fortigate\Policy\Policy;
 use Fortinet\Fortigate\Address;
 use Fortinet\Fortigate\AddressGroup;
 use Fortinet\Fortigate\NetDevice;
@@ -60,7 +60,7 @@ class FortigateTest extends TestCase {
     $lagg1->addLaggNetDevice($port2);
     $vlan42 = new NetDevice("vlan42", NetDevice::VLAN, "192.168.42.254", 24);
     $vlan42->setVlanDevice($lagg1);
-    $vlan42->vlanID = 42;
+    $vlan42->setVlanID(42);
     $fgt->addNetDevice($port1);
     $fgt->addNetDevice($port2);
     $fgt->addNetDevice($lagg1);
@@ -75,5 +75,29 @@ class FortigateTest extends TestCase {
     $this->assertEquals($fgt->interfaces["lagg1"], $lagg1);
     $this->assertEquals($fgt->interfaces["port1"], $port1);
     $this->assertEquals($fgt->interfaces["port2"], $port2);
+  }
+
+  public function testPolicy()
+  {
+    $fgt = new Fortigate();
+    $fgt->addNetDevice(new NetDevice("port1", NetDevice::PHY, "192.168.1.1", 24));
+    $fgt->addNetDevice(new NetDevice("port2", NetDevice::PHY, "192.168.2.1", 24));
+    $fgt->addAddress(new Address("LAN1", "192.168.1.0", "255.255.255.0"));
+    $fgt->addAddress(new Address("LAN2", "192.168.2.0", "255.255.255.0"));
+    $policy = new Policy();
+    $policy->addSrcInterface($fgt->interfaces["port1"]);
+    $policy->addDstInterface($fgt->interfaces["port2"]);
+    $policy->addSrcAddress($fgt->addresses["LAN1"]);
+    $policy->addDstAddress($fgt->addresses["LAN2"]);
+    $policy->addService(Service::ALL());
+    $policy->doNAT();
+    $fgt->addPolicy($policy);
+
+    $conf = "edit 1000\nset srcintf port1\nset dstintf port2\nset srcaddr LAN1\nset dstaddr LAN2\nset service ALL\nset action accept\nset nat enable\nnext\n";
+    $this->assertEquals($policy->getConf(), $conf);
+    $policy2 = new Policy();
+    $this->assertEquals($policy2->id, 1001);
+
+    //print $fgt;
   }
 }

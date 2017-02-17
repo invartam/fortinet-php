@@ -24,4 +24,15 @@ class VIP extends PolicyAddress {
       return $this->$property;
     }
   }
+
+  public function getConf()
+  {
+    $conf = "edit $this->name\n";
+    $conf .= "set extip $this->extip\n";
+    $conf .= "set extintf $this->extintf\n";
+    $conf .= "set mappedip $this->mappedip\n";
+    $conf .= "next\n";
+
+    return $conf;
+  }
 }

@@ -2,14 +2,22 @@
 
 namespace Fortinet\Fortigate;
 
-class Service {
+use Fortinet\Fortigate\Policy\PolicyService;
+
+class Service extends PolicyService {
+
+  const PROTO_ALL = "ALL";
+  const PROTO_ICMP = "ICMP";
+  const PROTO_IP = "IP";
+
+  const L4_UDP = "udp";
+  const L4_TCP = "tcp";
 
   private static $ALL = null;
 
-  private $name = "";
-  private $sport = 0;
-  private $dport = 0;
-  private $proto = "tcp";
+  private $proto = self::PROTO_ALL;
+  private $udpportrange = [];
+  private $tcpportrange = [];
 
   public static function ALL()
   {
@@ -19,19 +27,21 @@ class Service {
     return self::$ALL;
   }
 
-  public function __construct($name, $proto = "icmp", $dport = 0, $sport = 0)
+  public function __construct($name, $proto = self::PROTO_ALL, $l4proto = self::L4_TCP, $portrange = "")
   {
     $this->name = $name;
     $this->proto = $proto;
-    $this->dport = $dport;
-    $this->sport = $sport;
+    if (!empty($portrange)) {
+      $this->{$l4proto . "portrange"} = $portrange;
+    }
   }
 
-  public function __set($property, $value)
+  public function addPortRange($l4proto, $portrange)
   {
-    if (property_exists($this, $property)) {
-      $this->$property = $value;
+    if (empty($portrange)) {
+      throw new Exception("Portrange is empty", 1);
     }
+    $this->{$l4proto . "portrange"} = $portrange;
   }
 
   public function __get($property)
@@ -39,5 +49,23 @@ class Service {
     if (property_exists($this, $property)) {
       return $this->$property;
     }
+  }
+
+  public function getConf()
+  {
+    $conf = "edit \"$this->name\"\n";
+    $conf .= "set protocol $this->proto\n";
+    if (($this->proto == self::PROTO_IP) && empty($this->udpportrange) && empty($this->tcpportrange)) {
+      throw new Exception("There is no ports set", 1);
+    }
+    if (!empty($this->udpportrange)) {
+      $conf .= "set udp-portrange " . implode(" ", $this->udpportrange) . "\n";
+    }
+    if (!empty($this->tcpportrange)) {
+      $conf .= "set tcp-portrange " . implode(" ", $this->tcpportrange) . "\n";
+    }
+    $conf .= "next\n";
+
+    return $conf;
   }
 }

@@ -2,6 +2,7 @@
 
 namespace Fortinet\Fortigate;
 
+use Exception;
 use Fortinet\Fortigate\FortiGlobal;
 use Fortinet\Fortigate\HA;
 use Fortinet\Fortigate\NetDevice;
@@ -37,10 +38,13 @@ class Fortigate {
   public function addZone(Zone $zone)
   {
     if (!array_key_exists($zone->getName(), $this->zones)) {
+      foreach ($variable as $key => $value) {
+        # code...
+      }
       $this->zones[$zone->getName()] = $zone;
       return true;
     }
-    return false;
+    throw new Exception("Zone $zone->name does not exist", 1);
   }
 
   public function addAddress(Address $addr)
@@ -49,7 +53,7 @@ class Fortigate {
       $this->addresses[$addr->getName()] = $addr;
       return true;
     }
-    return false;
+    throw new Exception("Address $addr->name does not exist", 1);
   }
 
   public function addAddressGroup(AddressGroup $addrgrp)
@@ -58,7 +62,7 @@ class Fortigate {
       $this->addressGroups[$addrgrp->getName()] = $addrgrp;
       return true;
     }
-    return false;
+    throw new Exception("Address Group $addrgrp->name does not exist", 1);
   }
 
   public function addService(Service $svc)
@@ -67,28 +71,26 @@ class Fortigate {
       $this->services[$svc->getName()] = $svc;
       return true;
     }
-    return false;
+    throw new Exception("Service $svc->name does not exist", 1);
   }
 
   public function addPolicy(Policy $policy)
   {
     foreach ($policy->srcintfs as $if) {
-      if (!array_key_exists($if->getName(), $this->NetDevices)
+      if (!array_key_exists($if->getName(), $this->interfaces)
           && !array_key_exists($if->getName(), $this->zones)
           && $if->name != "all")
       {
-        print "[ERROR] Fortigate::addPolicy(): Source NetDevice $if->name does not exist\n";
-        return false;
+        throw new Exception("Source interface $if->name does not exist", 1);
       }
     }
 
     foreach ($policy->dstintfs as $if) {
-      if (!array_key_exists($if->getName(), $this->NetDevices)
+      if (!array_key_exists($if->getName(), $this->interfaces)
           && !array_key_exists($if->getName(), $this->zones)
           && $if->name != "all")
       {
-        print "[ERROR] Fortigate::addPolicy(): Destination NetDevice $if->name does not exist\n";
-        return false;
+        throw new Exception("Destination interface $if->name does not exist", 1);
       }
     }
 
@@ -97,8 +99,7 @@ class Fortigate {
           && !array_key_exists($addr->getName(), $this->addressGroups)
           && $addr->name != "any")
       {
-        print "[ERROR] Fortigate::addPolicy(): Source address $addr->name does not exist\n";
-        return false;
+        throw new Exception("Source address $addr->name does not exist", 1);
       }
     }
 
@@ -108,8 +109,7 @@ class Fortigate {
           && !array_key_exists($addr->getName(), $this->VIPs)
           && $addr->name != "any")
       {
-        print "[ERROR] Fortigate::addPolicy(): Destination address $addr->name does not exist\n";
-        return false;
+        throw new Exception("Destination address $addr->name does not exist", 1);
       }
     }
 
@@ -118,8 +118,7 @@ class Fortigate {
           && !array_key_exists($service->getName(), $this->serviceGroups)
           && $service->name != "ALL")
       {
-        print "[ERROR] Fortigate::addPolicy(): Service $service->getName() does not exist\n";
-        return false;
+        throw new Exception("Service $service->name does not exist", 1);
       }
     }
 
@@ -141,5 +140,72 @@ class Fortigate {
     if (property_exists($this, $property)) {
       return $this->$property;
     }
+  }
+
+  public function __toString()
+  {
+    $conf = "";
+    if (isset($this->global)) {
+      $conf .= "config system global\n";
+      $conf .= $this->global->getConf();
+      $conf .= "end\n";
+    }
+    if (!empty($this->interfaces)) {
+      $conf .= "config system interfaces\n";
+      foreach ($this->interfaces as $if) {
+        $conf .= $if->getConf();
+      }
+      $conf .= "end\n";
+    }
+    if (!empty($this->zones)) {
+      $conf .= "config system zone\n";
+      foreach ($this->zones as $zone) {
+        $conf .= $zone->getConf();
+      }
+      $conf .= "end\n";
+    }
+    if (!empty($this->addresses)) {
+      $conf .= "config firewall address\n";
+      foreach ($this->addresses as $address) {
+        $conf .= $address->getConf();
+      }
+      $conf .= "end\n";
+    }
+    if (!empty($this->addressGroups)) {
+      $conf .= "config firewall addrgrp\n";
+      foreach ($this->addressGroups as $addrgrp) {
+        $conf .= $addrgrp->getConf();
+      }
+      $conf .= "end\n";
+    }
+    if (!empty($this->services)) {
+      $conf .= "config firewall service custom\n";
+      foreach ($this->services as $service) {
+        $conf .= $service->getConf();
+      }
+      $conf .= "end\n";
+    }
+    if (!empty($this->serviceGroups)) {
+      $conf .= "config firewall service custom\n";
+      foreach ($this->serviceGroups as $servicegroup) {
+        $conf .= $servicegroup->getConf();
+      }
+      $conf .= "end\n";
+    }
+    if (!empty($this->VIPs)) {
+      $conf .= "config firewall vip\n";
+      foreach ($this->VIPs as $vip) {
+        $conf .= $vip->getConf();
+      }
+      $conf .= "end\n";
+    }
+    if (!empty($this->policies)) {
+      $conf .= "config firewall policy\n";
+      foreach ($this->policies as $policy) {
+        $conf .= $policy->getConf();
+      }
+      $conf .= "end\n";
+    }
+    return $conf;
   }
 }

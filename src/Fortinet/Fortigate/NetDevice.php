@@ -12,17 +12,17 @@ class NetDevice extends PolicyInterface {
 
   private static $ANY = NULL;
 
-  private $ip = "0.0.0.0";
   private $masklength = 0;
   private $type = self::PHY;
   private $laggGroup = [];
   private $vlanID = 0;
+  private $vdom = "root";
   private $vlanDevice;
 
   public static function ANY()
   {
     if (!self::$ANY) {
-      self::$ALL = new self("any");
+      self::$ANY = new self("any");
     }
     return self::$ANY;
   }
@@ -35,11 +35,9 @@ class NetDevice extends PolicyInterface {
     $this->masklength = $masklength;
   }
 
-  public function __set($property, $value)
+  public function setVdom($vdom)
   {
-    if (property_exists($this, $property)) {
-      $this->$property = $value;
-    }
+    $this->vdom = $vdom;
   }
 
   public function __get($property)
@@ -54,6 +52,11 @@ class NetDevice extends PolicyInterface {
     $this->laggGroup[] = $if;
   }
 
+  public function setVlanID($id)
+  {
+    $this->vlanID = $id;
+  }
+
   public function setVlanDevice(NetDevice $if)
   {
     $this->vlanDevice = $if;
@@ -62,5 +65,24 @@ class NetDevice extends PolicyInterface {
   public function getVlanDevice(NetDevice $if)
   {
     return $this->vlanDevice;
+  }
+
+  public function getConf()
+  {
+    $conf = "edit $this->name\n";
+    $conf .= "set vdom $this->vdom\n";
+    $conf .= "set ip $this->ip/$this->masklength\n";
+    if ($this->type == self::VLAN){
+      $conf .= "set type vlan\n";
+      $conf .= "set vlanid $this->vlanID\n";
+      $conf .= "set interface $this->vlanDevice\n";
+    }
+    if ($this->type == self::LAGG){
+      $conf .= "set type agg\n";
+      $conf .= "set intf " . implode($this->laggGroup) . "\n";
+    }
+    $conf .= "next\n";
+
+    return $conf;
   }
 }

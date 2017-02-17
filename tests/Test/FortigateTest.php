@@ -93,7 +93,7 @@ class FortigateTest extends TestCase {
     $policy->doNAT();
     $fgt->addPolicy($policy);
 
-    $conf = "edit 1000\nset srcintf port1\nset dstintf port2\nset srcaddr LAN1\nset dstaddr LAN2\nset service ALL\nset action accept\nset nat enable\nnext\n";
+    $conf = "edit 1000\nset srcintf port1\nset dstintf port2\nset srcaddr LAN1\nset dstaddr LAN2\nset service ALL\nset logtraffic all\nset action accept\nset schedule always\nset nat enable\nnext\n";
     $this->assertEquals($policy->getConf(), $conf);
     $policy2 = new Policy();
     $this->assertEquals($policy2->id, 1001);

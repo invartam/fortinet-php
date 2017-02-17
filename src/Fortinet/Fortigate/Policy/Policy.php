@@ -9,6 +9,9 @@ use Fortinet\Fortigate\Policy\PolicyInterface;
 
 class Policy {
 
+  const LOG_UTM = "utm";
+  const LOG_ALL = "all";
+
   private static $NEXTID = 1000;
 
   private $id = 0;
@@ -19,6 +22,7 @@ class Policy {
   private $services = [];
   private $NAT = false;
   private $action = "accept";
+  private $log = self::LOG_ALL;
 
   public function __construct()
   {
@@ -54,6 +58,11 @@ class Policy {
   public function doNat()
   {
     $this->NAT = true;
+  }
+
+  public function setLog($log = self::LOG_ALL)
+  {
+    $this->log = $log;
   }
 
   public function setAction($action)
@@ -94,7 +103,9 @@ class Policy {
     $conf .= "set srcaddr " . implode(" ", $this->srcaddrs) . "\n";
     $conf .= "set dstaddr " . implode(" ", $this->dstaddrs) . "\n";
     $conf .= "set service " . implode(" ", $this->services) . "\n";
+    $conf .= "set logtraffic $this->log\n";
     $conf .= "set action $this->action\n";
+    $conf .= "set schedule always\n";
     if ($this->NAT){
       $conf .= "set nat enable\n";
     }

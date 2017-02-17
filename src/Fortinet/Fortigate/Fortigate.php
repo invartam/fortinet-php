@@ -151,7 +151,7 @@ class Fortigate {
       $conf .= "end\n";
     }
     if (!empty($this->interfaces)) {
-      $conf .= "config system interfaces\n";
+      $conf .= "config system interface\n";
       foreach ($this->interfaces as $if) {
         $conf .= $if->getConf();
       }

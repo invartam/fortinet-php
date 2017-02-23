@@ -38,13 +38,15 @@ class Fortigate {
   public function addZone(Zone $zone)
   {
     if (!array_key_exists($zone->getName(), $this->zones)) {
-      foreach ($variable as $key => $value) {
-        # code...
+      foreach ($zone->interfaces as $if) {
+        if (!array_key_exists($if->getName(), $this->interfaces)) {
+          throw new Exception("Interface $if->name does not exist for Zone $zone->name", 1);
+        }
       }
       $this->zones[$zone->getName()] = $zone;
       return true;
     }
-    throw new Exception("Zone $zone->name does not exist", 1);
+    throw new Exception("Zone $zone->name exists", 1);
   }
 
   public function addAddress(Address $addr)
@@ -53,7 +55,7 @@ class Fortigate {
       $this->addresses[$addr->getName()] = $addr;
       return true;
     }
-    throw new Exception("Address $addr->name does not exist", 1);
+    throw new Exception("Address $addr->name exists", 1);
   }
 
   public function addAddressGroup(AddressGroup $addrgrp)
@@ -62,7 +64,7 @@ class Fortigate {
       $this->addressGroups[$addrgrp->getName()] = $addrgrp;
       return true;
     }
-    throw new Exception("Address Group $addrgrp->name does not exist", 1);
+    throw new Exception("Address Group $addrgrp->name exists", 1);
   }
 
   public function addService(Service $svc)
@@ -71,7 +73,7 @@ class Fortigate {
       $this->services[$svc->getName()] = $svc;
       return true;
     }
-    throw new Exception("Service $svc->name does not exist", 1);
+    throw new Exception("Service $svc->name exists", 1);
   }
 
   public function addPolicy(Policy $policy)
@@ -132,7 +134,7 @@ class Fortigate {
       $this->VIPs[$vip->getName()] = $vip;
       return true;
     }
-    return false;
+    throw new Exception("VIP $vip->name exists", 1);
   }
 
   public function __get($property)

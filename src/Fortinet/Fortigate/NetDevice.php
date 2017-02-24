@@ -52,6 +52,24 @@ class NetDevice extends PolicyInterface {
     $this->laggGroup[] = $if;
   }
 
+  public function setType($type)
+  {
+    $this->type = $type;
+  }
+
+  public function setIP($ip)
+  {
+    if (count(explode(".", $ip)) != 4) {
+      throw new Exception("Error, IP is incorrect for interface $this->name", 1);
+    }
+    $this->ip = $ip;
+  }
+
+  public function setMask($mask)
+  {
+    $this->mask = $mask;
+  }
+
   public function setVlanID($id)
   {
     $this->vlanID = $id;

@@ -100,4 +100,13 @@ class FortigateTest extends TestCase {
 
     //print $fgt;
   }
+
+  public function testGlobal()
+  {
+    $fgt = new Fortigate();
+    $global = new FortiGlobal();
+    $global->hostname = "TEST";
+    $fgt->setGlobal($global);
+    $this->assertEquals($fgt->global->hostname, "TEST");
+  }
 }

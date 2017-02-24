@@ -26,13 +26,21 @@ class Fortigate {
   private $policies = [];
   private $VIPs = [];
 
+  public function setGlobal(FortiGlobal $global)
+  {
+    if (!isset($global)) {
+      throw new Exception("Global object is null", 1);
+    }
+    $this->global = $global;
+  }
+
   public function addNetDevice(NetDevice $if)
   {
     if (!array_key_exists($if->getName(), $this->interfaces)) {
       $this->interfaces[$if->getName()] = $if;
       return true;
     }
-    return false;
+    throw new Exception("Interface $if->name exists", 1);
   }
 
   public function addZone(Zone $zone)

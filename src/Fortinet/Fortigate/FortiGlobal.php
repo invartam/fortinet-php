@@ -1,10 +1,9 @@
 <?php
-
 namespace Fortinet\Fortigate;
 
 class FortiGlobal {
 
-  $hostname = "";
+  private $hostname = "";
 
   public function __set($property, $value)
   {

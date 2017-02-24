@@ -18,6 +18,7 @@ class NetDevice extends PolicyInterface {
   private $vlanID = 0;
   private $vdom = "root";
   private $vlanDevice;
+  private $alias = "";
 
   public static function ANY()
   {
@@ -80,6 +81,16 @@ class NetDevice extends PolicyInterface {
     $this->vlanDevice = $if;
   }
 
+  public function setVdom($vdom)
+  {
+    $this->vdom = $vdom;
+  }
+
+  public function setAlias($alias)
+  {
+    $this->alias = $alias;
+  }
+
   public function getVlanDevice(NetDevice $if)
   {
     return $this->vlanDevice;
@@ -98,6 +109,9 @@ class NetDevice extends PolicyInterface {
     if ($this->type == self::LAGG){
       $conf .= "set type agg\n";
       $conf .= "set intf " . implode($this->laggGroup) . "\n";
+    }
+    if (!empty($this->alias)) {
+      $conf .= "set alias $this->alias\n";
     }
     $conf .= "next\n";
 

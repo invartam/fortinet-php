@@ -3,13 +3,13 @@
 namespace Fortinet\Fortigate;
 
 use Fortinet\Fortigate\Policy\PolicyInterface;
-use Fortinet\Fortigate\Interface;
+use Fortinet\Fortigate\NetDevice;
 
 class Zone extends PolicyInterface {
 
   private $interfaces = [];
 
-  public function addInterface(Interface $if)
+  public function addInterface(NetDevice $if)
   {
     $this->interfaces[] = $if;
   }

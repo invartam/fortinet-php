@@ -63,7 +63,7 @@ class NetDevice extends PolicyInterface {
 
   public function setMask($mask)
   {
-    $this->mask = $mask;
+    $this->masklength = $mask;
   }
 
   public function setVlanID($id)

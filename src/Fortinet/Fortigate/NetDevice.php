@@ -36,11 +36,6 @@ class NetDevice extends PolicyInterface {
     $this->masklength = $masklength;
   }
 
-  public function setVdom($vdom)
-  {
-    $this->vdom = $vdom;
-  }
-
   public function __get($property)
   {
     if (property_exists($this, $property)) {

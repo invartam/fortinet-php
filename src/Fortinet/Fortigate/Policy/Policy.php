@@ -23,6 +23,7 @@ class Policy {
   private $NAT = false;
   private $action = "accept";
   private $log = self::LOG_ALL;
+  private $section = "";
 
   public function __construct()
   {
@@ -63,6 +64,11 @@ class Policy {
   public function setLog($log = self::LOG_ALL)
   {
     $this->log = $log;
+  }
+
+  public function setGlobalLabel($section)
+  {
+    $this->section = $section;
   }
 
   public function setAction($action)
@@ -106,7 +112,10 @@ class Policy {
     $conf .= "set logtraffic $this->log\n";
     $conf .= "set action $this->action\n";
     $conf .= "set schedule always\n";
-    if ($this->NAT){
+    if (!empty($this->section)) {
+      $conf .= "set global-label $this->section";
+    }
+    if ($this->NAT) {
       $conf .= "set nat enable\n";
     }
     $conf .= "next\n";

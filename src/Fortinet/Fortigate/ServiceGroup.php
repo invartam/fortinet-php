@@ -16,7 +16,7 @@ class ServiceGroup extends PolicyService {
     $this->name = $name;
   }
 
-  public function addService(Service $service)
+  public function addService(PolicyService $service)
   {
     $this->services[] = $address;
   }

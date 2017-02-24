@@ -1,6 +1,6 @@
 <?php
 
-namespace Fortinet\Fortigate
+namespace Fortinet\Fortigate;
 
 class FortiGlobal {
 

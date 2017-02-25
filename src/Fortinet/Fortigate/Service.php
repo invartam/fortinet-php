@@ -33,7 +33,7 @@ class Service extends PolicyService {
     $this->name = $name;
     $this->proto = $proto;
     if (!empty($portrange)) {
-      $this->{$l4proto . "portrange"} = $portrange;
+      $this->{$l4proto . "portrange"}[] = $portrange;
     }
   }
 

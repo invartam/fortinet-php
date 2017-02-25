@@ -43,10 +43,10 @@ class Service extends PolicyService {
       throw new Exception("Portrange is empty", 1);
     }
     if ($l4proto == self::L4_TCP) {
-      $this->tcpportrange = $portrange;
+      $this->tcpportrange[] = $portrange;
     }
     if ($l4proto == self::L4_UDP) {
-      $this->udpportrange = $portrange;
+      $this->udpportrange[] = $portrange;
     }
   }
 

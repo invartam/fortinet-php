@@ -32,7 +32,7 @@ class AddressGroup extends PolicyAddress {
     if (empty($this->addresses)) {
       throw new Exception("AddressGroup $this->name is empty", 1);
     }
-    $conf .= "set member " . implode($this->addresses) . "\n";
+    $conf .= "set member " . implode(" ", $this->addresses) . "\n";
     $conf .= "end\n";
 
     return $conf;

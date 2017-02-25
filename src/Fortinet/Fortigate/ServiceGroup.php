@@ -35,7 +35,7 @@ class ServiceGroup extends PolicyService {
 
     }
     $conf = "edit \"$this->name\"\n";
-    $conf .= "set member " . implode($this->services) . "\n";
+    $conf .= "set member " . implode(" ", $this->services) . "\n";
     $conf .= "next\n";
 
     return $conf;

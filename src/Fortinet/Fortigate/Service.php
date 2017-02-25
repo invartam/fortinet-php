@@ -2,6 +2,7 @@
 
 namespace Fortinet\Fortigate;
 
+use Exception;
 use Fortinet\Fortigate\Policy\PolicyService;
 
 class Service extends PolicyService {
@@ -41,7 +42,12 @@ class Service extends PolicyService {
     if (empty($portrange)) {
       throw new Exception("Portrange is empty", 1);
     }
-    $this->{$l4proto . "portrange"} = $portrange;
+    if ($l4proto == self::L4_TCP) {
+      $this->tcpportrange = $portrange;
+    }
+    if ($l4proto == self::L4_UDP) {
+      $this->udpportrange = $portrange;
+    }
   }
 
   public function __get($property)

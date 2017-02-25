@@ -2,6 +2,7 @@
 
 namespace Fortinet\Fortigate;
 
+use Exception;
 use Fortinet\Fortigate\Policy\PolicyAddress;
 use Fortinet\Fortigate\Address;
 
@@ -16,7 +17,7 @@ class AddressGroup extends PolicyAddress {
 
   public function addAddress(PolicyAddress $address)
   {
-    $this->addresses[] = $address->getName();
+    $this->addresses[] = $address;
   }
 
   public function __get($property)

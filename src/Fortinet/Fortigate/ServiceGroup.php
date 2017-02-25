@@ -8,7 +8,6 @@ use Fortinet\Fortigate\Policy\PolicyService;
 
 class ServiceGroup extends PolicyService {
 
-  private $name = "";
   private $services = [];
 
   public function __construct($name)
@@ -18,7 +17,7 @@ class ServiceGroup extends PolicyService {
 
   public function addService(PolicyService $service)
   {
-    $this->services[] = $address;
+    $this->services[] = $service;
   }
 
   public function __get($property)
@@ -32,7 +31,6 @@ class ServiceGroup extends PolicyService {
   {
     if (empty($this->services)){
       throw new Exception("There is no services in service group $this->name", 1);
-
     }
     $conf = "edit \"$this->name\"\n";
     $conf .= "set member " . implode(" ", $this->services) . "\n";

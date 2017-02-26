@@ -98,7 +98,7 @@ class Policy {
       throw new Exception("There is no source addresses in policy $this->id", 1);
     }
     if (empty($this->dstaddrs)){
-      throw new Exception("There is no destination interfaces in policy $this->id", 1);
+      throw new Exception("There is no destination addresses in policy $this->id", 1);
     }
     if (empty($this->services)){
       throw new Exception("There is no services in policy $this->id", 1);
@@ -113,7 +113,7 @@ class Policy {
     $conf .= "set action $this->action\n";
     $conf .= "set schedule always\n";
     if (!empty($this->section)) {
-      $conf .= "set global-label $this->section";
+      $conf .= "set global-label $this->section\n";
     }
     if ($this->NAT) {
       $conf .= "set nat enable\n";

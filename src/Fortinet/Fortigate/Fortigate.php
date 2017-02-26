@@ -86,6 +86,15 @@ class Fortigate {
     throw new Exception("Service $svc->name exists", 1);
   }
 
+  public function addServiceGroup(ServiceGroup $svcgrp)
+  {
+    if (!array_key_exists($svcgrp->getName(), $this->serviceGroups)) {
+      $this->serviceGroups[$svcgrp->getName()] = $svcgrp;
+      return true;
+    }
+    throw new Exception("Address Group $svcgrp->name exists", 1);
+  }
+
   public function addPolicy(Policy $policy)
   {
     foreach ($policy->srcintfs as $if) {

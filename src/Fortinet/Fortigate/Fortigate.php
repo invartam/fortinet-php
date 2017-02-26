@@ -118,7 +118,7 @@ class Fortigate {
     foreach ($policy->srcaddrs as $addr) {
       if (!array_key_exists($addr->getName(), $this->addresses)
           && !array_key_exists($addr->getName(), $this->addressGroups)
-          && $addr->name != "any")
+          && $addr->name != "all")
       {
         throw new Exception("Source address $addr->name does not exist", 1);
       }
@@ -128,7 +128,7 @@ class Fortigate {
       if (!array_key_exists($addr->getName(), $this->addresses)
           && !array_key_exists($addr->getName(), $this->addressGroups)
           && !array_key_exists($addr->getName(), $this->VIPs)
-          && $addr->name != "any")
+          && $addr->name != "all")
       {
         throw new Exception("Destination address $addr->name does not exist", 1);
       }

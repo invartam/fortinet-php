@@ -113,7 +113,7 @@ class Policy {
     $conf .= "set action $this->action\n";
     $conf .= "set schedule always\n";
     if (!empty($this->section)) {
-      $conf .= "set global-label $this->section\n";
+      $conf .= "set global-label \"$this->section\"\n";
     }
     if ($this->NAT) {
       $conf .= "set nat enable\n";

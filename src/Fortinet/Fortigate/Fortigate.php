@@ -46,9 +46,11 @@ class Fortigate {
   public function addZone(Zone $zone)
   {
     if (!array_key_exists($zone->getName(), $this->zones)) {
-      foreach ($zone->interfaces as $if) {
-        if (!array_key_exists($if->getName(), $this->interfaces)) {
-          throw new Exception("Interface $if->name does not exist for Zone $zone->name", 1);
+      if (!empty($zone->interfaces)) {
+        foreach ($zone->interfaces as $if) {
+          if (!array_key_exists($if->getName(), $this->interfaces)) {
+            throw new Exception("Interface $if->name does not exist for Zone $zone->name", 1);
+          }
         }
       }
       $this->zones[$zone->getName()] = $zone;

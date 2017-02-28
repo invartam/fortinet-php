@@ -1,7 +1,7 @@
 <?php
 namespace Fortinet\Fortigate\VPN;
 
-use Policy\PolicyInterface;
+use Fortinet\Fortigate\Policy\PolicyInterface;
 
 class VPN extends PolicyInterface {
 

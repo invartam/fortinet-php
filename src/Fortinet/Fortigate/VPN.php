@@ -1,5 +1,5 @@
 <?php
-namespace Fortinet\Fortigate\VPN;
+namespace Fortinet\Fortigate;
 
 use Fortinet\Fortigate\Policy\PolicyInterface;
 

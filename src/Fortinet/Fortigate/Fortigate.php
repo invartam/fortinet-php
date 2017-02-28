@@ -6,6 +6,7 @@ use Exception;
 use Fortinet\Fortigate\FortiGlobal;
 use Fortinet\Fortigate\HA;
 use Fortinet\Fortigate\NetDevice;
+use Fortinet\Fortigate\VPN;
 use Fortinet\Fortigate\Zone;
 use Fortinet\Fortigate\Address;
 use Fortinet\Fortigate\AddressGroup;

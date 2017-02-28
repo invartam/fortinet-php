@@ -112,7 +112,7 @@ class Fortigate {
       if (!array_key_exists($if->getName(), $this->interfaces)
           && !array_key_exists($if->getName(), $this->zones)
           && !array_key_exists($if->getName(), $this->VPNs)
-          && $if->name != "all")
+          && $if->name != "any")
       {
         throw new Exception("Source interface $if->name does not exist", 1);
       }
@@ -122,7 +122,7 @@ class Fortigate {
       if (!array_key_exists($if->getName(), $this->interfaces)
           && !array_key_exists($if->getName(), $this->zones)
           && !array_key_exists($if->getName(), $this->VPNs)
-          && $if->name != "all")
+          && $if->name != "any")
       {
         throw new Exception("Destination interface $if->name does not exist", 1);
       }

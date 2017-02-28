@@ -207,7 +207,7 @@ class Fortigate {
       $conf .= "end\n";
     }
     if (!empty($this->serviceGroups)) {
-      $conf .= "config firewall service custom\n";
+      $conf .= "config firewall service group\n";
       foreach ($this->serviceGroups as $servicegroup) {
         $conf .= $servicegroup->getConf();
       }

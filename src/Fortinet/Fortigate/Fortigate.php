@@ -18,6 +18,7 @@ class Fortigate {
   private $global;
   private $ha;
   private $interfaces = [];
+  private $VPNs = [];
   private $zones = [];
   private $addresses = [];
   private $addressGroups = [];
@@ -41,6 +42,15 @@ class Fortigate {
       return true;
     }
     throw new Exception("Interface $if->name exists", 1);
+  }
+
+  public function addVPN(VPN $vpn)
+  {
+    if (!array_key_exists($vpn->getName(), $this->VPNs)) {
+      $this->VPNs[$vpn->getName()] = $vpn;
+      return true;
+    }
+    throw new Exception("VPN $vpn->name exists", 1);
   }
 
   public function addZone(Zone $zone)
@@ -100,6 +110,7 @@ class Fortigate {
     foreach ($policy->srcintfs as $if) {
       if (!array_key_exists($if->getName(), $this->interfaces)
           && !array_key_exists($if->getName(), $this->zones)
+          && !array_key_exists($if->getName(), $this->VPNs)
           && $if->name != "all")
       {
         throw new Exception("Source interface $if->name does not exist", 1);
@@ -109,6 +120,7 @@ class Fortigate {
     foreach ($policy->dstintfs as $if) {
       if (!array_key_exists($if->getName(), $this->interfaces)
           && !array_key_exists($if->getName(), $this->zones)
+          && !array_key_exists($if->getName(), $this->VPNs)
           && $if->name != "all")
       {
         throw new Exception("Destination interface $if->name does not exist", 1);

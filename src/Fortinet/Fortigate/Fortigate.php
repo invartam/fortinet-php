@@ -179,25 +179,25 @@ class Fortigate {
   public function __toString()
   {
     $conf = "";
-    if (isset($this->global)) {
-      $conf .= "config system global\n";
-      $conf .= $this->global->getConf();
-      $conf .= "end\n";
-    }
-    if (!empty($this->interfaces)) {
-      $conf .= "config system interface\n";
-      foreach ($this->interfaces as $if) {
-        $conf .= $if->getConf();
-      }
-      $conf .= "end\n";
-    }
-    if (!empty($this->zones)) {
-      $conf .= "config system zone\n";
-      foreach ($this->zones as $zone) {
-        $conf .= $zone->getConf();
-      }
-      $conf .= "end\n";
-    }
+    // if (isset($this->global)) {
+    //   $conf .= "config system global\n";
+    //   $conf .= $this->global->getConf();
+    //   $conf .= "end\n";
+    // }
+    // if (!empty($this->interfaces)) {
+    //   $conf .= "config system interface\n";
+    //   foreach ($this->interfaces as $if) {
+    //     $conf .= $if->getConf();
+    //   }
+    //   $conf .= "end\n";
+    // }
+    // if (!empty($this->zones)) {
+    //   $conf .= "config system zone\n";
+    //   foreach ($this->zones as $zone) {
+    //     $conf .= $zone->getConf();
+    //   }
+    //   $conf .= "end\n";
+    // }
     if (!empty($this->addresses)) {
       $conf .= "config firewall address\n";
       foreach ($this->addresses as $address) {

@@ -34,7 +34,7 @@ class AddressGroup extends PolicyAddress {
       throw new Exception("AddressGroup $this->name is empty", 1);
     }
     $conf .= "set member " . implode(" ", $this->addresses) . "\n";
-    $conf .= "end\n";
+    $conf .= "next\n";
 
     return $conf;
   }

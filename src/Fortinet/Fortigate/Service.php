@@ -10,6 +10,7 @@ class Service extends PolicyService {
   const PROTO_ALL = "ALL";
   const PROTO_ICMP = "ICMP";
   const PROTO_IP = "IP";
+  const PROTO_L4 = "TCP/UDP/SCTP";
 
   const L4_UDP = "udp";
   const L4_TCP = "tcp";
@@ -28,7 +29,7 @@ class Service extends PolicyService {
     return self::$ALL;
   }
 
-  public function __construct($name, $proto = self::PROTO_ALL, $l4proto = self::L4_TCP, $portrange = "")
+  public function __construct($name, $proto = self::PROTO_ALL, $l4proto = "", $portrange = "")
   {
     $this->name = $name;
     $this->proto = $proto;
@@ -60,11 +61,9 @@ class Service extends PolicyService {
   public function getConf()
   {
     $conf = "edit \"$this->name\"\n";
-    if (($this->proto == self::PROTO_IP) && empty($this->udpportrange) && empty($this->tcpportrange)) {
+    $conf .= "set protocol $this->proto\n";
+    if (($this->proto == self::PROTO_L4) && empty($this->udpportrange) && empty($this->tcpportrange)) {
       throw new Exception("There is no ports set", 1);
-    }
-    if ($this->proto != self::PROTO_IP) {
-      $conf .= "set protocol $this->proto\n";
     }
     if (!empty($this->udpportrange)) {
       $conf .= "set udp-portrange " . implode(" ", $this->udpportrange) . "\n";

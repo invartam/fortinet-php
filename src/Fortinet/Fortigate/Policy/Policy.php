@@ -6,6 +6,7 @@ use Exception;
 use Fortinet\Fortigate\Policy\PolicyAddress;
 use Fortinet\Fortigate\Policy\PolicyService;
 use Fortinet\Fortigate\Policy\PolicyInterface;
+use Fortinet\Fortigate\Policy\PolicyNat;
 
 class Policy {
 
@@ -21,6 +22,7 @@ class Policy {
   private $dstaddrs = [];
   private $services = [];
   private $NAT = false;
+  private $NATPool = NULL;
   private $action = "accept";
   private $log = self::LOG_ALL;
   private $section = "";
@@ -56,9 +58,10 @@ class Policy {
     $this->services[] = $svc;
   }
 
-  public function doNat()
+  public function doNat(PolicyNat $pool = NULL)
   {
     $this->NAT = true;
+    $this->NATPool = $pool;
   }
 
   public function setLog($log = self::LOG_ALL)
@@ -117,6 +120,10 @@ class Policy {
     }
     if ($this->NAT) {
       $conf .= "set nat enable\n";
+    }
+    if ($this->NATPool != NULL) {
+      $conf .= "set ippool enable\n";
+      $conf .= "set poolname " . $this->NATPool->getName() . "\n";
     }
     $conf .= "next\n";
 

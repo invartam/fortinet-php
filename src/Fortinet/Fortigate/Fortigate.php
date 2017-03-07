@@ -12,6 +12,8 @@ use Fortinet\Fortigate\Address;
 use Fortinet\Fortigate\AddressGroup;
 use Fortinet\Fortigate\Service;
 use Fortinet\Fortigate\ServiceGroup;
+use Fortinet\Fortigate\VIP;
+use Fortinet\Fortigate\IPPool;
 use Fortinet\Fortigate\Policy\Policy;
 
 class Fortigate {
@@ -27,6 +29,20 @@ class Fortigate {
   private $serviceGroups = [];
   private $policies = [];
   private $VIPs = [];
+  private $IPPools = [];
+  private $ip = "";
+
+  public function __construct($ip = "")
+  {
+    $this->ip = $ip;
+  }
+
+  public function extractConfig()
+  {
+    if (empty($this->ip)) {
+      throw new Exception("No IP address set for this Fortigate", 1);
+    }
+  }
 
   public function setGlobal(FortiGlobal $global)
   {
@@ -169,6 +185,15 @@ class Fortigate {
     throw new Exception("VIP $vip->name exists", 1);
   }
 
+  public function addIPPool(IPPool $pool)
+  {
+    if (!array_key_exists($pool->getName(), $this->IPPools)) {
+      $this->IPPools[$pool->getName()] = $pool;
+      return true;
+    }
+    throw new Exception("IP Pool $pool->name exists", 1);
+  }
+
   public function __get($property)
   {
     if (property_exists($this, $property)) {
@@ -179,25 +204,25 @@ class Fortigate {
   public function __toString()
   {
     $conf = "";
-    // if (isset($this->global)) {
-    //   $conf .= "config system global\n";
-    //   $conf .= $this->global->getConf();
-    //   $conf .= "end\n";
-    // }
-    // if (!empty($this->interfaces)) {
-    //   $conf .= "config system interface\n";
-    //   foreach ($this->interfaces as $if) {
-    //     $conf .= $if->getConf();
-    //   }
-    //   $conf .= "end\n";
-    // }
-    // if (!empty($this->zones)) {
-    //   $conf .= "config system zone\n";
-    //   foreach ($this->zones as $zone) {
-    //     $conf .= $zone->getConf();
-    //   }
-    //   $conf .= "end\n";
-    // }
+    if (isset($this->global)) {
+      $conf .= "config system global\n";
+      $conf .= $this->global->getConf();
+      $conf .= "end\n";
+    }
+    if (!empty($this->interfaces)) {
+      $conf .= "config system interface\n";
+      foreach ($this->interfaces as $if) {
+        $conf .= $if->getConf();
+      }
+      $conf .= "end\n";
+    }
+    if (!empty($this->zones)) {
+      $conf .= "config system zone\n";
+      foreach ($this->zones as $zone) {
+        $conf .= $zone->getConf();
+      }
+      $conf .= "end\n";
+    }
     if (!empty($this->addresses)) {
       $conf .= "config firewall address\n";
       foreach ($this->addresses as $address) {
@@ -230,6 +255,13 @@ class Fortigate {
       $conf .= "config firewall vip\n";
       foreach ($this->VIPs as $vip) {
         $conf .= $vip->getConf();
+      }
+      $conf .= "end\n";
+    }
+    if (!empty($this->IPPools)) {
+      $conf .= "config firewall ippool\n";
+      foreach ($this->IPPools as $pool) {
+        $conf .= $pool->getConf();
       }
       $conf .= "end\n";
     }

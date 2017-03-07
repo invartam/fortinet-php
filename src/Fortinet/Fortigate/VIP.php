@@ -11,8 +11,9 @@ class VIP extends PolicyAddress {
   private PolicyInterface $extintf;
   private $mappedip = "";
 
-  public function __construct($extip, PolicyInterface $extintf, $mappedip)
+  public function __construct($name, $extip, $mappedip, PolicyInterface $extintf)
   {
+    $this->name = $name;
     $this->extip = $extip;
     $this->extintf = $extintf;
     $this->mappedip = $mappedip;

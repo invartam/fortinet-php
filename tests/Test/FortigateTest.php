@@ -12,6 +12,7 @@ use Fortinet\Fortigate\AddressGroup;
 use Fortinet\Fortigate\NetDevice;
 use Fortinet\Fortigate\Service;
 use Fortinet\Fortigate\VIP;
+use Fortinet\Fortigate\IPPool;
 use Fortinet\Fortigate\Zone;
 use Fortinet\Fortigate\FortiGlobal;
 
@@ -108,5 +109,25 @@ class FortigateTest extends TestCase {
     $global->hostname = "TEST";
     $fgt->setGlobal($global);
     $this->assertEquals($fgt->global->hostname, "TEST");
+  }
+
+  public function testIPPool()
+  {
+    $fgt = new Fortigate();
+    $fgt->addNetDevice(new NetDevice("port1", NetDevice::PHY, "192.168.1.1", 24));
+    $fgt->addNetDevice(new NetDevice("port2", NetDevice::PHY, "192.168.2.1", 24));
+    $fgt->addAddress(new Address("LAN1", "192.168.1.0", "255.255.255.0"));
+    $fgt->addAddress(new Address("LAN2", "192.168.2.0", "255.255.255.0"));
+    $fgt->addIPPool(new IPPool("POOL1", IPPool::TYPE_ONETOONE, "3.3.3.3"));
+    $policy = new Policy();
+    $policy->addSrcInterface($fgt->interfaces["port1"]);
+    $policy->addDstInterface($fgt->interfaces["port2"]);
+    $policy->addSrcAddress($fgt->addresses["LAN1"]);
+    $policy->addDstAddress($fgt->addresses["LAN2"]);
+    $policy->addService(Service::ALL());
+    $policy->doNAT($fgt->IPPools["POOL1"]);
+    $fgt->addPolicy($policy);
+
+    $this->assertEquals($policy->NATPool->getName(), "POOL1");
   }
 }

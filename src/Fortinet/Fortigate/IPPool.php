@@ -1,7 +1,12 @@
 <?php
-namespace Fortigate\Fortinet
+namespace Fortinet\Fortigate;
+
+use Fortinet\Fortigate\Policy\PolicyNat;
 
 class IPPool extends PolicyNat {
+
+  const TYPE_ONETOONE = "one-to-one";
+  const TYPE_OVERLOAD = "overload";
 
   private $type = "";
   private $ipl = "";
@@ -17,7 +22,7 @@ class IPPool extends PolicyNat {
 
   public function getConf()
   {
-    if (!in_array($this->type, ["one-to-one", "overload"])) {
+    if (!in_array($this->type, [self::TYPE_ONETOONE, self::TYPE_OVERLOAD])) {
       throw new Exception("The IPPool type $this->type is not yet supported", 1);
     }
     if (empty($this->name) || empty($this->ipl)) {
@@ -32,6 +37,7 @@ class IPPool extends PolicyNat {
     else {
       $conf .= "set endip $this->iph\n";
     }
+    $conf .= "next\n";
 
     return $conf;
   }

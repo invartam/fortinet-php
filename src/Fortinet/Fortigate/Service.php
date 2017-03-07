@@ -60,9 +60,11 @@ class Service extends PolicyService {
   public function getConf()
   {
     $conf = "edit \"$this->name\"\n";
-    $conf .= "set protocol $this->proto\n";
     if (($this->proto == self::PROTO_IP) && empty($this->udpportrange) && empty($this->tcpportrange)) {
       throw new Exception("There is no ports set", 1);
+    }
+    if ($this->proto != self::PROTO_IP) {
+      $conf .= "set protocol $this->proto\n";
     }
     if (!empty($this->udpportrange)) {
       $conf .= "set udp-portrange " . implode(" ", $this->udpportrange) . "\n";

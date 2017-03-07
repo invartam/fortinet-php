@@ -8,7 +8,7 @@ use Fortinet\Fortigate\Policy\PolicyInterface;
 class VIP extends PolicyAddress {
 
   private $extip = "";
-  private PolicyInterface $extintf;
+  private $extintf;
   private $mappedip = "";
 
   public function __construct($name, $extip, $mappedip, PolicyInterface $extintf)

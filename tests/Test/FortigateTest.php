@@ -15,6 +15,7 @@ use Fortinet\Fortigate\VIP;
 use Fortinet\Fortigate\IPPool;
 use Fortinet\Fortigate\Zone;
 use Fortinet\Fortigate\FortiGlobal;
+use Fortinet\Fortigate\Route;
 
 class FortigateTest extends TestCase {
 
@@ -129,5 +130,14 @@ class FortigateTest extends TestCase {
     $fgt->addPolicy($policy);
 
     $this->assertEquals($policy->NATPool->getName(), "POOL1");
+  }
+
+  public function testRoute()
+  {
+    $fgt = new Fortigate();
+    $fgt->addNetDevice(new NetDevice("port1", NetDevice::PHY, "192.168.1.1", 24));
+    $fgt->addRoute(new Route("192.168.0.0", "255.255.255.0", "port1", "192.168.1.254"));
+
+    $this->assertEquals($fgt->routes[0]->getDevice(), "port1");
   }
 }

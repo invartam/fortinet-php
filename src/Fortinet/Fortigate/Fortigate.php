@@ -30,6 +30,7 @@ class Fortigate {
   private $policies = [];
   private $VIPs = [];
   private $IPPools = [];
+  private $routes = [];
   private $ip = "";
 
   public function __construct($ip = "")
@@ -194,6 +195,15 @@ class Fortigate {
     throw new Exception("IP Pool $pool->name exists", 1);
   }
 
+  public function addRoute(Route $route)
+  {
+    if (!array_key_exists($route->getDevice(), $this->interfaces)) {
+      throw new Exception("Interface " . $route->getDevice() . " does not exist", 1);
+    }
+    $this->routes[] = $route;
+    return true;
+  }
+
   public function __get($property)
   {
     if (property_exists($this, $property)) {
@@ -248,6 +258,13 @@ class Fortigate {
       $conf .= "config firewall service group\n";
       foreach ($this->serviceGroups as $servicegroup) {
         $conf .= $servicegroup->getConf();
+      }
+      $conf .= "end\n";
+    }
+    if (!empty($this->routes)) {
+      $conf .= "config router static\n";
+      foreach ($this->routes as $route) {
+        $conf .= $route->getConf();
       }
       $conf .= "end\n";
     }

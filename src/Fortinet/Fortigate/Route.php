@@ -3,7 +3,7 @@ namespace Fortinet\Fortigate;
 
 class Route {
 
-  private static $ID = 0;
+  private static $ID = 1;
 
   private $id = 0;
   private $net = "";

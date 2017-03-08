@@ -197,7 +197,7 @@ class Fortigate {
 
   public function addRoute(Route $route)
   {
-    if (!array_key_exists($route->getDevice(), $this->interfaces)) {
+    if (!array_key_exists($route->getDevice(), $this->interfaces) && !array_key_exists($route->getDevice(), $this->VPNs)) {
       throw new Exception("Interface " . $route->getDevice() . " does not exist", 1);
     }
     $this->routes[] = $route;

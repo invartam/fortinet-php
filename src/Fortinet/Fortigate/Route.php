@@ -27,8 +27,8 @@ class Route {
     $conf = "edit $this->id\n";
     $conf .= "set dst $this->ip\n";
     $conf .= "set device \"$this->if\"\n";
-    if (!empty($gw)) {
-      $conf .= "set gateway $gw\n";
+    if (!empty($this->gw)) {
+      $conf .= "set gateway $this->gw\n";
     }
     $conf .= "next\n";
 

@@ -25,7 +25,7 @@ class Route {
   public function getConf()
   {
     $conf = "edit $this->id\n";
-    $conf .= "set dst $this->ip\n";
+    $conf .= "set dst $this->ip $this->mask\n";
     $conf .= "set device \"$this->if\"\n";
     if (!empty($this->gw)) {
       $conf .= "set gateway $this->gw\n";

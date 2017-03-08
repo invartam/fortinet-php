@@ -10,11 +10,17 @@ class NetDevice extends PolicyInterface {
   const VLAN = 1;
   const LAGG = 2;
 
+  const ACCESS_PING = "ping";
+  const ACCESS_SSH = "ssh";
+  const ACCESS_HTTP = "http";
+  const ACCESS_HTTPS = "https";
+
   private static $ANY = NULL;
 
   private $masklength = 0;
   private $type = self::PHY;
   private $laggGroup = [];
+  private $access = [];
   private $vlanID = 0;
   private $vdom = "root";
   private $vlanDevice;
@@ -91,6 +97,14 @@ class NetDevice extends PolicyInterface {
     return $this->vlanDevice;
   }
 
+  public function addAccess($access)
+  {
+    if (!in_array($access, [self::ACCESS_PING, self::ACCESS_SSH, self::ACCESS_HTTP, self::ACCESS_HTTPS])) {
+      throw new Exception("Access $access is not supported", 1);
+    }
+    $this->access[] = $access;
+  }
+
   public function getConf()
   {
     $conf = "edit $this->name\n";
@@ -107,6 +121,9 @@ class NetDevice extends PolicyInterface {
     }
     if (!empty($this->alias)) {
       $conf .= "set alias $this->alias\n";
+    }
+    if (!empty($this->access)) {
+      $conf .= "set allowaccess " . implode(" ", $this->access) . "\n";
     }
     $conf .= "next\n";
 

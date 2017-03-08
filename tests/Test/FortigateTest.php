@@ -46,10 +46,12 @@ class FortigateTest extends TestCase {
   {
     $fgt = new Fortigate();
     $port1 = new NetDevice("port1", NetDevice::PHY);
+    $port1->addAccess(NetDevice::ACCESS_PING);
     $fgt->addNetDevice($port1);
 
     $this->assertEquals($fgt->interfaces["port1"]->getName(), "port1");
     $this->assertEquals($fgt->interfaces["port1"]->type, NetDevice::PHY);
+    $this->assertEquals(implode($fgt->interfaces["port1"]->access), "ping");
   }
 
   public function testVlanLaggInterface()

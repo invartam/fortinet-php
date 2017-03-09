@@ -32,6 +32,7 @@ class Fortigate {
   private $IPPools = [];
   private $routes = [];
   private $ip = "";
+  private $bgp;
 
   public function __construct($ip = "")
   {
@@ -204,6 +205,11 @@ class Fortigate {
     return true;
   }
 
+  public function setBGP(BGP $bgp)
+  {
+    $this->bgp = $bgp;
+  }
+
   public function __get($property)
   {
     if (property_exists($this, $property)) {
@@ -266,6 +272,11 @@ class Fortigate {
       foreach ($this->routes as $route) {
         $conf .= $route->getConf();
       }
+      $conf .= "end\n";
+    }
+    if (isset($this->bgp)) {
+      $conf .= "config router bgp\n";
+      $conf .= $this->bgp->getConf();
       $conf .= "end\n";
     }
     if (!empty($this->VIPs)) {

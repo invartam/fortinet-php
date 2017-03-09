@@ -16,6 +16,8 @@ use Fortinet\Fortigate\IPPool;
 use Fortinet\Fortigate\Zone;
 use Fortinet\Fortigate\FortiGlobal;
 use Fortinet\Fortigate\Route;
+use Fortinet\Fortigate\BGP;
+use Fortinet\Fortigate\BGPNeighbor;
 
 class FortigateTest extends TestCase {
 
@@ -141,5 +143,15 @@ class FortigateTest extends TestCase {
     $fgt->addRoute(new Route("192.168.0.0", "255.255.255.0", "port1", "192.168.1.254"));
 
     $this->assertEquals($fgt->routes[0]->getDevice(), "port1");
+  }
+
+  public function testBGP()
+  {
+    $bgp = new BGP("3.3.3.3", 42);
+    $bgp->addNeighbor(new BGPNeighbor("4.4.4.4", 21, "toto"));
+    $fgt = new Fortigate();
+    $fgt->setBGP($bgp);
+    $this->assertEquals($fgt->bgp->getRouterID(), "3.3.3.3");
+    $this->assertEquals($fgt->bgp->getNeighbors()["4.4.4.4"]->getIP(), "4.4.4.4");
   }
 }

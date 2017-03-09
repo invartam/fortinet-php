@@ -17,7 +17,7 @@ class BGPNeighbor {
     }
     $this->IP = $ip;
     $this->AS = $as;
-    $this->password;
+    $this->password = $password;
   }
 
   public function getIP()

@@ -7,6 +7,9 @@ require __DIR__ . '/../../vendor/autoload.php';
 use PHPUnit\Framework\TestCase;
 use Fortinet\Fortigate\Fortigate;
 use Fortinet\Fortigate\Policy\Policy;
+use Fortinet\Fortigate\VPN\IPSec\IPsec;
+use Fortinet\Fortigate\VPN\IPSec\Phase1;
+use Fortinet\Fortigate\VPN\IPSec\Phase2;
 use Fortinet\Fortigate\Address;
 use Fortinet\Fortigate\AddressGroup;
 use Fortinet\Fortigate\NetDevice;
@@ -153,5 +156,17 @@ class FortigateTest extends TestCase {
     $fgt->setBGP($bgp);
     $this->assertEquals($fgt->bgp->getRouterID(), "3.3.3.3");
     $this->assertEquals($fgt->bgp->getNeighbors()["4.4.4.4"]->getIP(), "4.4.4.4");
+  }
+
+  public function testIPSec()
+  {
+    $if = new NetDevice("port1", NetDevice::PHY);
+    $p1 = new Phase1("VPN_TEST", $if, "3.3.3.3", "pass");
+    $p2 = new Phase2($p1);
+    $ipsec = new IPSec($p1, $p2);
+    $fgt = new Fortigate();
+    $fgt->addNetDevice($if);
+    $fgt->addIPSecVPN($ipsec);
+    print $fgt;
   }
 }

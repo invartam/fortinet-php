@@ -1,12 +1,13 @@
 <?php
-
 namespace Fortinet\Fortigate;
 
 use Exception;
 use Fortinet\Fortigate\FortiGlobal;
 use Fortinet\Fortigate\HA;
 use Fortinet\Fortigate\NetDevice;
-use Fortinet\Fortigate\VPN;
+use Fortinet\Fortigate\VPN\IPSec\IPSec;
+use Fortinet\Fortigate\VPN\IPSec\Phase1;
+use Fortinet\Fortigate\VPN\IPSec\Phase2;
 use Fortinet\Fortigate\Zone;
 use Fortinet\Fortigate\Address;
 use Fortinet\Fortigate\AddressGroup;
@@ -21,7 +22,9 @@ class Fortigate {
   private $global;
   private $ha;
   private $interfaces = [];
-  private $VPNs = [];
+  private $IPSecVPNs = [];
+  private $IPSecP1 = [];
+  private $IPSecP2 = [];
   private $zones = [];
   private $addresses = [];
   private $addressGroups = [];
@@ -63,10 +66,12 @@ class Fortigate {
     throw new Exception("Interface $if->name exists", 1);
   }
 
-  public function addVPN(VPN $vpn)
+  public function addIPSecVPN(IPSec $ipsec)
   {
-    if (!array_key_exists($vpn->getName(), $this->VPNs)) {
-      $this->VPNs[$vpn->getName()] = $vpn;
+    if (!array_key_exists($ipsec->getName(), $this->IPSecVPNs)) {
+      $this->IPSecVPNs[$ipsec->getName()] = $ipsec;
+      $this->IPSecP1[$ipsec->getP1()->getName()] = $ipsec->getP1();
+      $this->IPSecP2[$ipsec->getP2()->getName()] = $ipsec->getP2();
       return true;
     }
     throw new Exception("VPN $vpn->name exists", 1);
@@ -129,7 +134,7 @@ class Fortigate {
     foreach ($policy->srcintfs as $if) {
       if (!array_key_exists($if->getName(), $this->interfaces)
           && !array_key_exists($if->getName(), $this->zones)
-          && !array_key_exists($if->getName(), $this->VPNs)
+          && !array_key_exists($if->getName(), $this->IPSecVPNs)
           && $if->name != "any")
       {
         throw new Exception("Source interface $if->name does not exist", 1);
@@ -139,7 +144,7 @@ class Fortigate {
     foreach ($policy->dstintfs as $if) {
       if (!array_key_exists($if->getName(), $this->interfaces)
           && !array_key_exists($if->getName(), $this->zones)
-          && !array_key_exists($if->getName(), $this->VPNs)
+          && !array_key_exists($if->getName(), $this->IPSecVPNs)
           && $if->name != "any")
       {
         throw new Exception("Destination interface $if->name does not exist", 1);
@@ -198,7 +203,7 @@ class Fortigate {
 
   public function addRoute(Route $route)
   {
-    if (!array_key_exists($route->getDevice(), $this->interfaces) && !array_key_exists($route->getDevice(), $this->VPNs)) {
+    if (!array_key_exists($route->getDevice(), $this->interfaces) && !array_key_exists($route->getDevice(), $this->IPSecVPNs)) {
       throw new Exception("Interface " . $route->getDevice() . " does not exist", 1);
     }
     $this->routes[] = $route;
@@ -236,6 +241,20 @@ class Fortigate {
       $conf .= "config system zone\n";
       foreach ($this->zones as $zone) {
         $conf .= $zone->getConf();
+      }
+      $conf .= "end\n";
+    }
+    if (!empty($this->IPSecP1)) {
+      $conf .= "config vpn ipsec phase1-interface\n";
+      foreach ($this->IPSecP1 as $p1) {
+        $conf .= $p1->getConf();
+      }
+      $conf .= "end\n";
+    }
+    if (!empty($this->IPSecP2)) {
+      $conf .= "config vpn ipsec phase2-interface\n";
+      foreach ($this->IPSecP2 as $p2) {
+        $conf .= $p2->getConf();
       }
       $conf .= "end\n";
     }
